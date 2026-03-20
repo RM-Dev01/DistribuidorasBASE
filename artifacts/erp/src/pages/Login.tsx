@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useLocation } from "wouter";
+import { Redirect } from "wouter";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
@@ -10,7 +10,6 @@ import { motion } from "framer-motion";
 import { toast } from "sonner";
 
 export default function Login() {
-  const [, setLocation] = useLocation();
   const { user } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -18,8 +17,7 @@ export default function Login() {
 
   // Redirect if already logged in
   if (user) {
-    setLocation("/");
-    return null;
+    return <Redirect to="/" />;
   }
 
   const handleLogin = async (e: React.FormEvent) => {

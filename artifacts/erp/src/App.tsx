@@ -4,6 +4,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as SonnerToaster } from "sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider, useAuth } from "@/hooks/use-auth";
+import { CartProvider } from "@/hooks/use-cart";
 
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import Login from "@/pages/Login";
@@ -14,6 +15,13 @@ import Customers from "@/pages/Customers";
 import Sales from "@/pages/Sales";
 import GenericModule from "@/pages/GenericModule";
 import NotFound from "@/pages/not-found";
+
+// Public store pages
+import StoreCatalog from "@/pages/store/StoreCatalog";
+import StoreProduct from "@/pages/store/StoreProduct";
+import StoreCart from "@/pages/store/StoreCart";
+import StoreCheckout from "@/pages/store/StoreCheckout";
+import StoreOrderTracking from "@/pages/store/StoreOrderTracking";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -27,6 +35,21 @@ const queryClient = new QueryClient({
 function AppContent() {
   const { user, loading } = useAuth();
   const [location] = useLocation();
+
+  // Allow public store routes without auth
+  if (location.startsWith("/tienda")) {
+    return (
+      <Switch>
+        <Route path="/tienda" component={StoreCatalog} />
+        <Route path="/tienda/producto/:id" component={StoreProduct} />
+        <Route path="/tienda/carrito" component={StoreCart} />
+        <Route path="/tienda/checkout" component={StoreCheckout} />
+        <Route path="/tienda/pedido/:number" component={StoreOrderTracking} />
+        <Route path="/tienda/pedidos" component={StoreOrderTracking} />
+        <Route component={StoreCatalog} />
+      </Switch>
+    );
+  }
 
   if (loading) {
     return (
@@ -113,18 +136,20 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <TooltipProvider>
-          <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
-            <Switch>
-              <Route path="/login" component={Login} />
-              <Route>
-                <AppContent />
-              </Route>
-            </Switch>
-          </WouterRouter>
-          <Toaster />
-          <SonnerToaster position="top-right" richColors />
-        </TooltipProvider>
+        <CartProvider>
+          <TooltipProvider>
+            <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
+              <Switch>
+                <Route path="/login" component={Login} />
+                <Route>
+                  <AppContent />
+                </Route>
+              </Switch>
+            </WouterRouter>
+            <Toaster />
+            <SonnerToaster position="top-right" richColors />
+          </TooltipProvider>
+        </CartProvider>
       </AuthProvider>
     </QueryClientProvider>
   );

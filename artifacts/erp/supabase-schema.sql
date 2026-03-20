@@ -329,6 +329,38 @@ CREATE POLICY "Admin manage transactions" ON financial_transactions FOR ALL TO a
   USING (get_user_role() IN ('admin', 'cashier'));
 
 -- ============================================================
+-- POLÍTICAS PÚBLICAS (tienda web — acceso anónimo)
+-- ============================================================
+
+-- Cualquier visitante puede ver categorías y marcas
+CREATE POLICY "Public read categories" ON categories FOR SELECT TO anon USING (true);
+CREATE POLICY "Public read brands" ON brands FOR SELECT TO anon USING (true);
+
+-- Visitantes pueden ver productos activos habilitados para web
+CREATE POLICY "Public read web products" ON products FOR SELECT TO anon
+  USING (web_enabled = true AND is_active = true);
+
+-- Visitantes pueden registrar un cliente (checkout como invitado)
+CREATE POLICY "Public insert customers" ON customers FOR INSERT TO anon
+  WITH CHECK (true);
+
+-- Visitantes pueden crear pedidos web
+CREATE POLICY "Public insert orders" ON orders FOR INSERT TO anon
+  WITH CHECK (true);
+
+-- Visitantes pueden ver su pedido por número de orden
+CREATE POLICY "Public read own order" ON orders FOR SELECT TO anon
+  USING (true);
+
+-- Visitantes pueden crear ítems de pedido
+CREATE POLICY "Public insert order_items" ON order_items FOR INSERT TO anon
+  WITH CHECK (true);
+
+-- Visitantes pueden leer ítems del pedido (para tracking)
+CREATE POLICY "Public read order_items" ON order_items FOR SELECT TO anon
+  USING (true);
+
+-- ============================================================
 -- DATOS INICIALES
 -- ============================================================
 

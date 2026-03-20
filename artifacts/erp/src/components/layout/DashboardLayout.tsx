@@ -4,7 +4,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { 
   LayoutDashboard, ShoppingCart, Package, Users, 
   Truck, DollarSign, Settings, LogOut, Receipt, ShieldAlert,
-  ClipboardList
+  ClipboardList, Globe
 } from "lucide-react";
 import {
   Sidebar,
@@ -66,6 +66,16 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
               ))}
             </SidebarMenu>
           </SidebarContent>
+          {user.role === "admin" && (
+            <div className="px-3 pb-2">
+              <a href="/tienda" target="_blank" rel="noopener noreferrer">
+                <SidebarMenuButton className="w-full h-11 rounded-xl text-primary/80 hover:text-primary hover:bg-primary/10 border border-dashed border-primary/30">
+                  <Globe className="w-5 h-5" />
+                  <span className="font-medium">Ver tienda web</span>
+                </SidebarMenuButton>
+              </a>
+            </div>
+          )}
           <SidebarFooter className="p-4">
             <div className="p-4 rounded-xl bg-secondary/50 border border-border/50 mb-4">
               <p className="text-sm font-semibold text-foreground truncate">{user.name}</p>
